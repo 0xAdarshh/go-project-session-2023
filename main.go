@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -13,15 +14,20 @@ const PrintTotalTimeTook = "\nTotal time took = %f"
 func main() {
 	tStart := time.Now()
 
+	wg := sync.WaitGroup{}
 	inputs := getSampleInputList(15000)
 	var results []int
 	for _, input := range inputs {
+
+		wg.Add(1)
 		go func(opInput int) {
 			res := verySlowAssHeavyOperation(opInput)
 			results = append(results, res)
+			wg.Done()
 		}(input)
 	}
 
+	wg.Wait()
 	fmt.Printf(PrintTableHeader)
 	for i, result := range results {
 		fmt.Printf(PrintFormattedInputAndResult, i, result, inputs[i])

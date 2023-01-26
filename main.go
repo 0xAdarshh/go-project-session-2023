@@ -15,6 +15,7 @@ func main() {
 	tStart := time.Now()
 
 	wg := sync.WaitGroup{}
+	mut := sync.Mutex{}
 	inputs := getSampleInputList(15000)
 	var results []int
 	for _, input := range inputs {
@@ -22,7 +23,9 @@ func main() {
 		wg.Add(1)
 		go func(opInput int) {
 			res := verySlowAssHeavyOperation(opInput)
+			mut.Lock()
 			results = append(results, res)
+			mut.Unlock()
 			wg.Done()
 		}(input)
 	}

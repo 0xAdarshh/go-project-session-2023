@@ -13,10 +13,13 @@ const PrintTotalTimeTook = "\nTotal time took = %f"
 func main() {
 	tStart := time.Now()
 
-	inputs := getSampleInputList(3)
+	inputs := getSampleInputList(15000)
 	var results []int
 	for _, input := range inputs {
-		results = append(results, verySlowAssHeavyOperation(input))
+		go func(opInput int) {
+			res := verySlowAssHeavyOperation(opInput)
+			results = append(results, res)
+		}(input)
 	}
 
 	fmt.Printf(PrintTableHeader)
